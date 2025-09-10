@@ -11,15 +11,20 @@
 
 ## OpenSearch MCP Server
 
-**opensearch-mcp-server-py** is a Model Context Protocol (MCP) server for OpenSearch that enables AI assistants to interact with OpenSearch clusters. It provides a standardized interface for AI models to perform operations like searching indices, retrieving mappings, and managing shards through both stdio and streaming (SSE/Streamable HTTP) protocols.
+**opensearch-mcp-server-py** is a Model Context Protocol (MCP) server for OpenSearch that enables AI assistants to interact with OpenSearch clusters. It provides a standardized interface for AI models to perform operations like searching indices, retrieving mappings, and managing shards.
+
+**🎉 NEW: FastMCP Implementation**
+
+Starting with version 0.4.0, this server has been migrated to use FastMCP for improved developer experience and production readiness. The original low-level implementation is still available for backward compatibility.
 
 **Key features:**
 
+- **FastMCP Integration**: Modern, production-ready MCP server implementation with automatic schema generation and error handling
 - Seamless integration with AI assistants and LLMs through the MCP protocol
-- Support for both stdio and streaming server transports (SSE and Streamable HTTP)
 - Built-in tools for common OpenSearch operations
 - Easy integration with Claude Desktop and LangChain
 - Secure authentication using basic auth or IAM roles
+- **Backward Compatibility**: Legacy implementation available via `opensearch-mcp-server-legacy` command
 
 ## Installing opensearch-mcp-server-py
 
@@ -28,6 +33,35 @@ Opensearch-mcp-server-py can be installed from [PyPI](https://pypi.org/project/o
 ```
 pip install opensearch-mcp-server-py
 ```
+
+## Choosing Your Implementation
+
+This package provides two implementations:
+
+### FastMCP (Recommended)
+The new FastMCP-based implementation offers:
+- Simplified codebase with automatic schema generation
+- Better error handling and production features
+- Modern Python async/await patterns
+- Automatic MCP protocol handling
+
+```bash
+# Run with FastMCP (default)
+opensearch-mcp-server-py --mode single --config config.yml
+```
+
+### Legacy Implementation
+The original low-level MCP SDK implementation:
+- Full control over MCP protocol details
+- Support for both stdio and streaming transports
+- Battle-tested in production environments
+
+```bash
+# Run with legacy implementation
+opensearch-mcp-server-legacy --transport stdio --mode single --config config.yml
+```
+
+For new deployments, we recommend using the FastMCP implementation. See [FASTMCP_MIGRATION.md](FASTMCP_MIGRATION.md) for detailed migration information.
 
 ## Available Tools
 

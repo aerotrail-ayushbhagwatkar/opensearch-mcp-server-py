@@ -2,6 +2,26 @@
 
 Inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [Released 0.4.0] - 2024-XX-XX
+
+### Added
+- **MAJOR**: Migrated to FastMCP for improved developer experience and production readiness ([#34](https://github.com/opensearch-project/opensearch-mcp-server-py/issues/34))
+- New FastMCP-based server implementation with automatic schema generation and simplified error handling
+- Backward compatibility with legacy low-level MCP SDK implementation
+- New console script `opensearch-mcp-server-legacy` for original implementation
+- FastMCP migration documentation in `FASTMCP_MIGRATION.md`
+- Support for all existing tools in FastMCP implementation including dynamically generated tools
+
+### Changed
+- **BREAKING**: Default entry point now uses FastMCP implementation
+- Replaced `mcp[cli]>=1.9.4` dependency with `fastmcp>=2.0.0`
+- Simplified tool implementations using `@mcp.tool` decorators
+- Automatic MCP protocol handling and error conversion
+
+### Fixed
+- Improved error handling with automatic exception-to-MCP conversion
+- Reduced code complexity by ~60% while maintaining all functionality
+
 ## [Unreleased]
 
 ### Added

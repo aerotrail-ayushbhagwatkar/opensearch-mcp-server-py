@@ -1,13 +1,13 @@
 [project]
 name = "opensearch-mcp-server-py"
-version = "0.3.2"
+version = "0.4.0"
 description = "OpenSearch MCP Server"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "aiohttp>=3.11.18",
     "boto3>=1.38.3",
-    "mcp[cli]>=1.9.4",
+    "fastmcp>=2.0.0",
     "opensearch-py>=2.8.0",
     "pydantic>=2.11.3",
     "pyyaml>=6.0.2",
@@ -75,7 +75,8 @@ line-ending = "auto"
 docstring-code-format = true
 
 [project.scripts]
-opensearch-mcp-server-py = "mcp_server_opensearch:main"  # Importable path
+opensearch-mcp-server-py = "mcp_server_opensearch:main"  # FastMCP version (default)
+opensearch-mcp-server-legacy = "mcp_server_opensearch.legacy_main:main"  # Legacy version
 
 [project.urls]
 Homepage = "https://github.com/opensearch-project/opensearch-mcp-server-py"

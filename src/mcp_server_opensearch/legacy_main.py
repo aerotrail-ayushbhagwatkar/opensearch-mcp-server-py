@@ -6,7 +6,8 @@ import asyncio
 import logging
 from typing import Dict, List
 
-from .fastmcp_server import serve_fastmcp
+from .stdio_server import serve as serve_stdio
+from .streaming_server import serve as serve_streaming
 
 
 def parse_unknown_args_to_dict(unknown_args: List[str]) -> Dict[str, str]:
@@ -39,20 +40,10 @@ def parse_unknown_args_to_dict(unknown_args: List[str]) -> Dict[str, str]:
         return {}
 
 
-async def serve_mcp(
-    mode: str = 'single',
-    profile: str = '',
-    config_file_path: str = '',
-    cli_tool_overrides: dict = None,
-) -> None:
-    """Serve using FastMCP."""
-    await serve_fastmcp(mode, profile, config_file_path, cli_tool_overrides)
-
-
 def main() -> None:
     """
-    Main entry point for the OpenSearch MCP Server.
-    Handles command line arguments and starts the FastMCP server.
+    Main entry point for the OpenSearch MCP Server (Legacy).
+    Handles command line arguments and starts the appropriate server based on transport type.
     """
     # Configure logging
     logging.basicConfig(
@@ -60,10 +51,20 @@ def main() -> None:
     )
     logger = logging.getLogger(__name__)
 
-    logger.info('Starting FastMCP OpenSearch server...')
+    logger.info('Starting MCP server (Legacy)...')
 
     # Set up command line argument parser
-    parser = argparse.ArgumentParser(description='OpenSearch MCP Server (FastMCP)')
+    parser = argparse.ArgumentParser(description='OpenSearch MCP Server (Legacy)')
+    parser.add_argument(
+        '--transport',
+        choices=['stdio', 'stream'],
+        default='stdio',
+        help='Transport type (stdio or stream)',
+    )
+    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to (streaming only)')
+    parser.add_argument(
+        '--port', type=int, default=9900, help='Port to listen on (streaming only)'
+    )
     parser.add_argument(
         '--mode',
         choices=['single', 'multi'],
@@ -83,15 +84,27 @@ def main() -> None:
     args, unknown = parser.parse_known_args()
     cli_tool_overrides = parse_unknown_args_to_dict(unknown)
 
-    # Start the FastMCP server
-    asyncio.run(
-        serve_mcp(
-            mode=args.mode,
-            profile=args.profile,
-            config_file_path=args.config_file_path,
-            cli_tool_overrides=cli_tool_overrides,
+    # Start the appropriate server based on transport type
+    if args.transport == 'stdio':
+        asyncio.run(
+            serve_stdio(
+                mode=args.mode,
+                profile=args.profile,
+                config_file_path=args.config_file_path,
+                cli_tool_overrides=cli_tool_overrides,
+            )
         )
-    )
+    else:
+        asyncio.run(
+            serve_streaming(
+                host=args.host,
+                port=args.port,
+                mode=args.mode,
+                profile=args.profile,
+                config_file_path=args.config_file_path,
+                cli_tool_overrides=cli_tool_overrides,
+            )
+        )
 
 
 if __name__ == '__main__':
